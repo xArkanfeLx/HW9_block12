@@ -2,12 +2,12 @@ package com.example.customlistview
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.AdapterView
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -21,7 +21,7 @@ import java.io.IOException
 
 class CreateProduct_Activity : AppCompatActivity() {
 
-    var bitmap: Bitmap? = null
+    var photoUri: Uri? = null
     val GALLERY_REQUEST: Int = 302
     val products:MutableList<Product> = mutableListOf()
 
@@ -29,6 +29,7 @@ class CreateProduct_Activity : AppCompatActivity() {
     private lateinit var imgIV: ImageView
     private lateinit var nameET: EditText
     private lateinit var priceET: EditText
+    private lateinit var infoET: EditText
     private lateinit var addBTN: Button
     private lateinit var productsLV: ListView
 
@@ -54,13 +55,15 @@ class CreateProduct_Activity : AppCompatActivity() {
         addBTN.setOnClickListener{
             val productName = nameET.text.toString()
             val productPrice = priceET.text.toString()
-            val productImg = bitmap
-            val product = Product(productName,productPrice,productImg)
+            val productImg = photoUri.toString()
+            val info = infoET.text.toString()
+            val product = Product(productName,productPrice,productImg,info)
             products.add(product)
             val listAdapter = ListAdapter(this@CreateProduct_Activity,products)
             productsLV.adapter = listAdapter
             listAdapter.notifyDataSetChanged()
             clearProductFields()
+            photoUri=null
         }
     }
 
@@ -68,6 +71,7 @@ class CreateProduct_Activity : AppCompatActivity() {
         imgIV.setImageResource(R.drawable.product_default_icon)
         nameET.text.clear()
         priceET.text.clear()
+        infoET.text.clear()
     }
 
     private fun init() {
@@ -77,9 +81,17 @@ class CreateProduct_Activity : AppCompatActivity() {
         imgIV = findViewById(R.id.imgIV)
         nameET = findViewById(R.id.nameET)
         priceET = findViewById(R.id.priceET)
+        infoET = findViewById(R.id.infoET)
         addBTN = findViewById(R.id.addBTN)
 
         productsLV = findViewById(R.id.productsLV)
+
+        productsLV.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, id ->
+            val product = products[id.toInt()]
+            intent = Intent(this, activity_preview_product::class.java)
+            intent.putExtra(Product::class.java.simpleName, product)
+            startActivity(intent)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -87,16 +99,12 @@ class CreateProduct_Activity : AppCompatActivity() {
         imgIV = findViewById(R.id.imgIV)
         when(requestCode) {
             GALLERY_REQUEST -> if(resultCode === RESULT_OK){
-                val selectedImage: Uri? = data?.data
-                try {
-                    bitmap = MediaStore.Images.Media.getBitmap(contentResolver,selectedImage)
-                } catch (e: IOException){
-                    e.printStackTrace()
-                }
-                imgIV.setImageBitmap(bitmap)
+                photoUri = data?.data
+                imgIV.setImageURI(photoUri)
             }
         }
     }
+
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_main,menu)
@@ -104,7 +112,6 @@ class CreateProduct_Activity : AppCompatActivity() {
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         finish()
-        System.exit(0);
         return super.onOptionsItemSelected(item)
     }
 }

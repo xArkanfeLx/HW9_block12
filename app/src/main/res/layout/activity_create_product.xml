@@ -47,16 +47,24 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="50"
-                    android:hint="Название продукта" />
+                    android:hint="@string/nameField_hint" />
 
                 <EditText
                     android:id="@+id/priceET"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="50"
-                    android:hint="Цена продукта" />
+                    android:hint="@string/priceField_hint" />
             </LinearLayout>
         </LinearLayout>
+
+        <EditText
+            android:id="@+id/infoET"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:textSize="16dp"
+            android:hint="@string/infoField_hint" />
 
         <Button
             android:id="@+id/addBTN"

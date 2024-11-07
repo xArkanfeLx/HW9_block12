@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         createBTN = findViewById(R.id.createBTN)
         createBTN.setOnClickListener{
             val intent = Intent(this,CreateProduct_Activity::class.java)
-            finishAffinity()
+            //finishAffinity()
             startActivity(intent)
         }
     }
