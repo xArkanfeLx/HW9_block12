@@ -28,6 +28,7 @@ class MainActivity : AppCompatActivity() {
         createBTN.setOnClickListener{
             val intent = Intent(this,CreateProduct_Activity::class.java)
             //finishAffinity()
+            finish()
             startActivity(intent)
         }
     }

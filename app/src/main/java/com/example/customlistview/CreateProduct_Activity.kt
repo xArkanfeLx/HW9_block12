@@ -12,6 +12,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ListView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -23,7 +24,9 @@ class CreateProduct_Activity : AppCompatActivity() {
 
     var photoUri: Uri? = null
     val GALLERY_REQUEST: Int = 302
-    val products:MutableList<Product> = mutableListOf()
+    var products:MutableList<Product> = mutableListOf()
+
+    private lateinit var listAdapter : ListAdapter
 
     private lateinit var toolbarTB: Toolbar
     private lateinit var imgIV: ImageView
@@ -59,12 +62,16 @@ class CreateProduct_Activity : AppCompatActivity() {
             val info = infoET.text.toString()
             val product = Product(productName,productPrice,productImg,info)
             products.add(product)
-            val listAdapter = ListAdapter(this@CreateProduct_Activity,products)
-            productsLV.adapter = listAdapter
-            listAdapter.notifyDataSetChanged()
+            newListAdapter()
             clearProductFields()
             photoUri=null
         }
+    }
+
+    fun newListAdapter(){
+        listAdapter = ListAdapter(this@CreateProduct_Activity,products)
+        productsLV.adapter = listAdapter
+        listAdapter.notifyDataSetChanged()
     }
 
     private fun clearProductFields() {
@@ -72,6 +79,15 @@ class CreateProduct_Activity : AppCompatActivity() {
         nameET.text.clear()
         priceET.text.clear()
         infoET.text.clear()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val check = intent.extras?.getBoolean(("newCheck")) ?: false
+        if(check) {
+            products = intent.getSerializableExtra("list") as MutableList<Product>
+            newListAdapter()
+        }
     }
 
     private fun init() {
@@ -87,9 +103,11 @@ class CreateProduct_Activity : AppCompatActivity() {
         productsLV = findViewById(R.id.productsLV)
 
         productsLV.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, id ->
-            val product = products[id.toInt()]
+            val index = id.toInt()
+            val product = products[index]
             intent = Intent(this, activity_preview_product::class.java)
-            intent.putExtra(Product::class.java.simpleName, product)
+            intent.putExtra("list", products as ArrayList<Product>)
+            intent.putExtra("indexProduct", index)
             startActivity(intent)
         }
     }
@@ -111,7 +129,8 @@ class CreateProduct_Activity : AppCompatActivity() {
         return true
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        finish()
+        finishAffinity()
+        val toast = Toast.makeText(applicationContext,"Закрыли приложение",Toast.LENGTH_SHORT).show()
         return super.onOptionsItemSelected(item)
     }
 }

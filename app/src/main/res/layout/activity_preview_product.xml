@@ -38,7 +38,7 @@
             android:layout_weight="60"
             android:orientation="vertical">
 
-            <TextView
+            <EditText
                 android:id="@+id/nameTV"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -48,23 +48,29 @@
                 android:textColor="@color/purple_500"
                 android:hint="@string/nameField_hint" />
 
-            <TextView
+            <EditText
                 android:id="@+id/priceTV"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="33"
                 android:textSize="20dp"
                 android:textColor="@color/price_color"
-                android:layout_marginBottom="50dp"
+                android:layout_marginBottom="20dp"
                 android:hint="@string/priceField_hint" />
-            <TextView
+            <EditText
                 android:id="@+id/infoTV"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="33"
                 android:textSize="16dp"
-                android:layout_marginBottom="50dp"
+                android:layout_marginBottom="20dp"
                 android:hint="@string/infoField_hint" />
+
+            <Button
+                android:id="@+id/changeBTN"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Изменить"/>
 
         </LinearLayout>
     </LinearLayout>
